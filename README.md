@@ -1,6 +1,6 @@
-#Description 
-This project is a try to make Hash-Table(https://github.com/AlbatraozRUS/Hash-Table), which was created earlier, work faster by rewriting parts of code in ASM
-#Analyze 
+# Description 
+This project is a try to make Hash-Table( https://github.com/AlbatraozRUS/Hash-Table), which was created earlier, work faster by rewriting parts of code in ASM.
+# Analyze 
 After analyzing the code, i have found a weakness: the proccess of searching elemenent in Hash-Table. Because it is one of the most important functions of project, i have decided to write ASM function, which should work faster, than same on C. 
 So this is code of what we had initially:
 ``` C
@@ -102,7 +102,7 @@ _Z13SearchByValueP6MyListPc:
         ret
 ```
 Not so fast, isn`t it?
-##Result 
+# Result 
 After some time of analyzing, speed measurements of commands and other staff, i have rewrited it
 ``` asm
 global SearchByValue
@@ -154,5 +154,5 @@ SearchByValue:
 But what about speed? 
 ![table.png](Таблица.png)
 ![picture.png](График.png)
-Pretty interesting, yeah? Somehow code generated with -O0 is twice faster than -O3. (>By secret i will tell you, that it is faster only in search function, summary -O3 is twice faster).
-But, despite it, ###i have successfully overtaked both -O0(more than 1,72 times) and -O3(more than 3,57 times). 
+Pretty interesting, yeah? Somehow code generated with -O0 is twice faster than -O3. *(By secret i will tell you, that it is faster only in search function, summary -O3 is twice faster)*.
+But, despite it, **i have successfully overtaked both -O0(more than 1,72 times) and -O3(more than 3,57 times).** 

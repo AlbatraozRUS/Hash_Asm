@@ -13,47 +13,86 @@ struct MyList* InitHashTable()
     return Table;
 }
 
-bool SearchByValue(MyList *Table, char *Value)
+bool SearchByValue(MyList *List, char *Value, int Size)
 {
-    for (int NumTable = 0; NumTable < SizeOfTable; NumTable++){
-        for (int NumOfList = 0; NumOfList <= Table[NumTable].size; NumOfList++){
-         if (Table[NumTable].Element[NumOfList].data == nullptr)
+        for (int NumOfList = 0; NumOfList <= Size; NumOfList++){
+         if (List->Element[NumOfList].data == nullptr)
              continue;
 
-         if (strcmp(Table[NumTable].Element[NumOfList].data, Value) == 0){
-             return true ;
+         if (strcmp(List->Element[NumOfList].data, Value) == 0){
+             return true;
          }
         }
-    }
-    return false;
+return false;
 }
+
 
 bool FillHashTable(MyList *Table)
 {
    size_t amount = 0;
 
    struct Line *Strings = Reading(&amount);
-   FILE *Results = fopen("/Users/albatraozrus/Desktop/Proga/Hash/result.csv", "w");
+   FILE *Results = fopen("/home/albatraozrus/Desktop/result.csv", "w");
    DecorateFile(Results);
-        {LOG_DURATION("NotReallyHash")
-   FILLHASHTABLE(Table, Strings, amount, NotReallyHash(),Results, "hello")}
+
+   {LOG_DURATION("NotReallyHash")
+    FILLHASHTABLE(Table, Strings, amount, NotReallyHash(),Results)}
+   int NotHash = NotReallyHash();
+    {LOG_DURATION("Search")
+    for (int index = 0; index < 1000; index++)
+        SearchByValue(&Table[NotHash% SizeOfTable], "hello", Table[NotHash% SizeOfTable].size);}
+    Clear(Table);
+
         {LOG_DURATION("FirstLetter")
-   FILLHASHTABLE(Table, Strings, amount, FirstLetter(Strings[Line].ptrbuffer),Results, "hello")}
+    FILLHASHTABLE(Table, Strings, amount, FirstLetter(Strings[Line].ptrbuffer),Results)}
+    int FL = FirstLetter("hello");
+    {LOG_DURATION("Search")
+        for (int index = 0; index < 1000; index++)
+            SearchByValue(&Table[FL% SizeOfTable], "hello", Table[FL% SizeOfTable].size);}
+    Clear(Table);
+
+
         {LOG_DURATION("Length")
-   FILLHASHTABLE(Table, Strings, amount, Length(Strings, Line),Results, "hello")}
+    FILLHASHTABLE(Table, Strings, amount, Length(Strings[Line].ptrbuffer),Results)}
+    int Len = Length("hello");
+    {LOG_DURATION("Search")
+    for (int index = 0; index < 1000; index++)
+        SearchByValue(&Table[Len% SizeOfTable], "hello", Table[Len% SizeOfTable].size);}
+    Clear(Table);
+
         {LOG_DURATION("SumOfLetters")
-   FILLHASHTABLE(Table, Strings, amount, SumOfLetters(Strings, Line),Results, "hello")}
+    FILLHASHTABLE(Table, Strings, amount, SumOfLetters(Strings[Line].ptrbuffer, Strings[Line].length),Results)}
+    int Sum = SumOfLetters("hello", strlen("hello"));
+    {LOG_DURATION("Search")
+    for (int index = 0; index < 1000; index++)
+        SearchByValue(&Table[Sum% SizeOfTable], "hello", Table[Sum% SizeOfTable].size);}
+    Clear(Table);
+
         {LOG_DURATION("Roll")
-   FILLHASHTABLE(Table, Strings, amount, Roll(Strings[Line].ptrbuffer),Results, "hello")}
+    FILLHASHTABLE(Table, Strings, amount, Roll(Strings[Line].ptrbuffer),Results)}
+   int roll = Roll("hello");
+    {LOG_DURATION("Search")
+    for (int index = 0; index < 1000; index++)
+        SearchByValue(&Table[roll % SizeOfTable], "hello", Table[roll% SizeOfTable].size);}
+    Clear(Table);
+
         {LOG_DURATION("GNUHash")
-   FILLHASHTABLE(Table, Strings, amount, GNUHash(Strings[Line].ptrbuffer,
-           Strings[Line].ptrbuffer[Strings[Line].length - 1]),Results, "hello")}
+     FILLHASHTABLE(Table, Strings, amount, GNUHash(Strings[Line].ptrbuffer, '\0'),Results)}
+     int GNU = GNUHash("hello", '\0');
+    {LOG_DURATION("Search")
+    for (int index = 0; index < 1000; index++)
+        SearchByValue(&Table[GNU% SizeOfTable], "hello", Table[GNU% SizeOfTable].size);}
+    Clear(Table);
+
         {LOG_DURATION("MurmurHash")
-   FILLHASHTABLE(Table, Strings, amount, MurmurHash(Strings[Line].ptrbuffer, Strings[Line].length),Results, "hello")
-   fclose(Results);
-    }
+   FILLHASHTABLE(Table, Strings, amount, MurmurHash(Strings[Line].ptrbuffer, Strings[Line].length),Results)}
+    int Mur = MurmurHash("hello", strlen("hello"));
+    {LOG_DURATION("Search")
+    for (int index = 0; index < 1000; index++)
+        SearchByValue(&Table[Mur% SizeOfTable], "hello", Table[Mur% SizeOfTable].size);}
+    Clear(Table);
 
-
+    fclose(Results);
    return true;
 }
 
@@ -64,6 +103,14 @@ bool DecorateFile(FILE *Results)
   fprintf(Results, "\n");
 
     return true;
+}
+
+void Clear(MyList *Table)
+{
+    for (int Line = 0; Line < SizeOfTable; Line++)
+        ClearList(&Table[Line]);
+    free(Table);
+    Table = InitHashTable();
 }
 
 void HashDUMP(MyList *Table)

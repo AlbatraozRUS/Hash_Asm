@@ -111,48 +111,38 @@ extern strcmp
 section .text
 
 SearchByValue:
-       push r13
-       push r12
        push r15
        push rbx
-       mov     rcx, 1000
-       mov     r13, rdi
-  .Around:
-         mov     r12, QWORD  [r13+8]
-         mov     r15, QWORD  [r13]
-         xor     ebx, ebx
+       mov  QWORD r15, [rdi]
+       xor     ebx, ebx
       .Inside:
-             cmp     rbx, r12
-             ja     .AroundNext
+             cmp     rbx, rdx
+             ja     .Not_Found
              mov     rdi, QWORD  [r15]
              test    rdi, rdi
              je      .InsideNext
              call    strcmp
              test    eax, eax
              je      .Found
+
       .InsideNext:
              inc     rbx
              add     r15, 16
              jmp .Inside
-  .AroundNext:
-         add     r13, 40
-         dec     rcx
-         test    ecx, ecx
-         jne     .Around
+  .Not_Found:
          xor     rax, rax
 .EXX:
          pop rbx
          pop r15
-         pop r12
-         pop r13
          ret
+         
 .Found:
        mov     rax, 1
-       jmp .EXX
-
+       pop rbx
+       pop r15
+       ret
 ```
 But what about speed? 
 ![table.png](Таблица.png)
 ![picture.png](График.png)
-Pretty interesting, yeah? Somehow code generated with -O0 is twice faster than -O3. *(By secret i will tell you, that it is faster only in search function, summary -O3 is twice faster)*.
-But, despite it, **i have successfully overtaked both -O0(more than 1,72 times) and -O3(more than 3,57 times).** 
+**Pretty interesting, yeah? Because my optimized version of Search was so fast, i could not measure time with 1000 requests, so i increased the amount of requests to 500 000! And here you can take a look on the results!**

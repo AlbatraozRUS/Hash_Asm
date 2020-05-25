@@ -1,7 +1,9 @@
 # Description 
 This project is a try to make Hash-Table( https://github.com/AlbatraozRUS/Hash-Table), which was created earlier, work faster by rewriting parts of code in ASM.
 # Analyze 
-After analyzing the code, i have found a weakness: the proccess of searching elemenent in Hash-Table. Because it is one of the most important functions of project, i have decided to write ASM function, which should work faster, than same on C. 
+After analyzing the code, i have found a weakness: according to callgrind the most slow function is the proccess of searching elemenent in Hash-Table.
+![Callgrind_Data.png](Callgrind_Data.png)
+Because it is one of the most important functions of project, i have decided to write ASM function, which should work faster, than same on C. 
 So this is code of what we had initially:
 ``` C
 bool SearchByValue(MyList *List, char *Value, int Size)
@@ -66,7 +68,7 @@ _Z13SearchByValueP6MyListPci:
         leave
         ret
 ```
-Not so fast, isn`t it? A lot of memory calls, some strange staff.
+Not so fast, isn`t it? A lot of memory calls, some strange staff. 
 # Result 
 After some time of analyzing, speed measurements of commands and other staff, i have rewrited it
 ``` asm
